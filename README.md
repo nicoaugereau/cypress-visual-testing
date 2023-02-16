@@ -8,7 +8,7 @@ Original module from `cypress-visual-regression` for adding visual regression te
 
 Install:
 
-Download the zip file in the release.
+Download the tar.gz file in the release and unzip in your root repository.
 
 ```sh
 $ npm install cypress-visual-regression.tar
