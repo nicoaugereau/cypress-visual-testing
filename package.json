@@ -1,27 +1,17 @@
 {
-  "name": "cypress-visual-regression",
-  "version": "2.1.1",
+  "name": "cypress-visual-testing",
+  "version": "2.2.1",
   "description": "Module for adding visual regression testing to Cypress",
-  "repository": "https://github.com/cypress-visual-regression/cypress-visual-regression",
-  "author": "Michael Herman <michael@mherman.org>",
+  "repository": "https://github.com/nicoaugereau/cypress-visual-testing.git",
   "license": "MIT",
   "keywords": [
     "visual regression",
+    "visual testing",
     "image diff",
     "cypress"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/cypress run --env type=actual",
-    "base": "./node_modules/.bin/cypress run --env type=base",
-    "prepublish": "npm run jest && npm run lint && npm run prettier:check && npm run build",
-    "lint": "eslint src",
-    "prebuild": "rimraf dist",
-    "build": "babel src --out-dir dist --extensions \".js\" --copy-files --plugins @babel/plugin-proposal-optional-chaining",
-    "prepare": "npm run build",
-    "ci": "export SNAPSHOT_DIRECTORY=cypress/snapshots && npm run build && npm run base && npm test",
-    "prettier:check": "prettier --check --trailing-comma es5 --single-quote --arrow-parens always \"src/**/*.js\"",
-    "prettier:fix": "prettier --write --trailing-comma es5 --single-quote --arrow-parens always \"src/**/*.js\"",
-    "jest": "jest tests"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
