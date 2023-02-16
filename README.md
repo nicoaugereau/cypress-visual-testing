@@ -1,4 +1,4 @@
-# Cypress Visual Regression
+# Cypress Visual Testing
 
 
 Original module from `cypress-visual-regression` for adding visual regression testing to [Cypress](https://www.cypress.io/), with image merging feature. This merge images (base + diff + actual) with `join-images`.
@@ -11,7 +11,7 @@ Install:
 Download the tar.gz file in the release and unzip in your root repository.
 
 ```sh
-$ npm install cypress-visual-regression.tar
+$ npm install cypress-visual-testing.tar
 ```
 
 Add the following config to your *cypress.config.js* file:
