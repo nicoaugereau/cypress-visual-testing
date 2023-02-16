@@ -18,7 +18,7 @@ Add the following config to your *cypress.config.js* file:
 
 ```javascript
 const { defineConfig } = require("cypress");
-const getCompareSnapshotsPlugin = require('cypress-visual-regression/dist/plugin');
+const getCompareSnapshotsPlugin = require('cypress-visual-testing/dist/plugin');
 
 module.exports = defineConfig({
   env: {
@@ -37,7 +37,7 @@ module.exports = defineConfig({
 Add the command to *cypress/support/commands.js*:
 
 ```javascript
-const compareSnapshotCommand = require('cypress-visual-regression/dist/command');
+const compareSnapshotCommand = require('cypress-visual-testing/dist/command');
 
 compareSnapshotCommand();
 ```
@@ -56,7 +56,7 @@ If you're using TypeScript, use files with a `.ts` extension, as follows:
 
 ```ts
 import { defineConfig } from 'cypress';
-import getCompareSnapshotsPlugin from 'cypress-visual-regression/dist/plugin';
+import getCompareSnapshotsPlugin from 'cypress-visual-testing/dist/plugin';
 
 export default defineConfig({
   env: {
@@ -75,7 +75,7 @@ export default defineConfig({
 *cypress/support/commands.ts*
 
 ```ts
-import compareSnapshotCommand from 'cypress-visual-regression/dist/command';
+import compareSnapshotCommand from 'cypress-visual-testing/dist/command';
 
 compareSnapshotCommand();
 ```
@@ -87,7 +87,7 @@ compareSnapshotCommand();
   "compilerOptions": {
     "types": [
       "cypress",
-      "cypress-visual-regression"
+      "cypress-visual-testing"
     ]
   }
 }
@@ -111,7 +111,7 @@ For more info on how to use TypeScript with Cypress, please refer to [this docum
 You can also pass default [arguments](https://docs.cypress.io/api/cypress-api/screenshot-api.html#Arguments) to `compareSnapshotCommand()`:
 
 ```javascript
-const compareSnapshotCommand = require('cypress-visual-regression/dist/command');
+const compareSnapshotCommand = require('cypress-visual-testing/dist/command');
 
 compareSnapshotCommand({
   capture: 'fullPage'
@@ -218,9 +218,6 @@ Find regressions:
 $ ./node_modules/.bin/cypress run --env type=actual
 ```
 
-## Example
-
-![example](./cypress-visual-regression.gif)
 
 ## Tips & Tricks
 
@@ -263,7 +260,7 @@ module.exports = beforeCompareSnapshotCommand;
 ```
 You may then use this function like below:
 ```js
-const compareSnapshotCommand = require("cypress-visual-regression/dist/command");
+const compareSnapshotCommand = require("cypress-visual-testing/dist/command");
 const beforeCompareSnapshotCommand = require("./commands/beforeCompareSnapshots");
 compareSnapshotCommand({
   errorThreshold: 0.1
