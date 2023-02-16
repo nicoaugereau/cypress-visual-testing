@@ -1,65 +1,46 @@
 {
-  "homepage": "https://github.com/nicoaugereau/cypress-visual-testing#readme",
-  "ignore": [
-    "src",
-    "cypress",
-    "cypress.json"
-  ],
+  "name": "cypress-visual-testing",
+  "version": "2.2.1",
+  "description": "Module for adding visual regression testing to Cypress",
+  "repository": "https://github.com/nicoaugereau/cypress-visual-testing.git",
+  "license": "MIT",
   "keywords": [
+    "visual regression",
     "visual testing",
     "image diff",
     "cypress"
   ],
-  "license": "MIT",
-  "name": "cypress-visual-testing",
-  "peerDependencies": {
-    "cypress": ">=5.6.0"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nicoaugereau/cypress-visual-testing.git"
-  },
-  "bugs": {
-    "url": "https://github.com/nicoaugereau/cypress-visual-testing/issues"
-  },
-  "version": "1.5.9",
-  "bundleDependencies": false,
-  "dependencies": {
-    "merge-img": "^2.1.3",
-    "pixelmatch": "^5.2.1",
-    "pngjs": "^6.0.0",
-    "sanitize-filename": "^1.6.3"
-  },
-  "deprecated": false,
-  "description": "Module for adding visual testing testing to Cypress",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "eslint": "^7.29.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.4",
-    "jest": "^27.0.5",
-    "prettier": "2.3.1",
+    "@babel/cli": "^7.17.10",
+    "@babel/plugin-proposal-optional-chaining": "^7.18.9",
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.1.1",
+    "prettier": "2.7.1",
     "rimraf": "^3.0.2"
   },
+  "peerDependencies": {
+    "cypress": ">=9.7.0"
+  },
   "files": [
-    "dist/command.js",
-    "dist/plugin.js",
-    "dist/utils.js",
-    "dist/README.md",
-    "dist/package.json"
+    "dist/**/*"
   ],
-  "scripts": {
-    "base": "cypress run --env type=base",
-    "build": "babel src --out-dir dist",
-    "ci": "export SNAPSHOT_DIRECTORY=cypress/snapshots && npm run build && npm run base && npm test",
-    "jest": "jest tests",
-    "lint": "eslint src/**",
-    "prebuild": "rimraf dist",
-    "prepare": "npm run build",
-    "prepublish": "npm run jest && npm run lint && npm run prettier:check && npm run build",
-    "prettier:check": "prettier --check --trailing-comma es5 --single-quote --arrow-parens always \"src/**/*.js\"",
-    "prettier:fix": "prettier --write --trailing-comma es5 --single-quote --arrow-parens always \"src/**/*.js\"",
-    "test": "cypress run --env type=actual"
-  }
+  "ignore": [
+    "src",
+    "docker",
+    "tests"
+  ],
+  "dependencies": {
+    "join-images": "^1.1.3",
+    "pixelmatch": "^5.2.1",
+    "pngjs": "^6.0.0",
+    "sanitize-filename": "^1.6.3",
+    "sharp": "^0.31.3"
+  },
+  "types": "dist/command.d.ts"
 }

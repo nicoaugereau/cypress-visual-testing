@@ -1,6 +1,8 @@
 const fs = require('fs');
 
-const { PNG } = require('pngjs');
+const {
+  PNG
+} = require('pngjs');
 
 function adjustCanvas(image, width, height) {
   if (image.width === width && image.height === height) {
@@ -14,20 +16,22 @@ function adjustCanvas(image, width, height) {
     bitDepth: image.bitDepth,
     inputHasAlpha: true
   });
-
   PNG.bitblt(image, imageAdjustedCanvas, 0, 0, image.width, image.height, 0, 0);
-
   return imageAdjustedCanvas;
-}
+} // eslint-disable-next-line arrow-body-style
 
-// eslint-disable-next-line arrow-body-style
+
 const mkdirp = async folderPath => {
   return new Promise((resolve, reject) => {
-    fs.mkdir(folderPath, { recursive: true }, error => {
+    fs.mkdir(folderPath, {
+      recursive: true
+    }, error => {
       if (error) {
         console.log(error); // eslint-disable-line no-console
+
         reject(new Error(`Error in creating ${folderPath}`));
       }
+
       resolve(true);
     });
   });
@@ -40,15 +44,18 @@ const createFolder = async (folderPath, failSilently) => {
     } catch (error) {
       if (failSilently) {
         console.log(error); // eslint-disable-line no-console
+
         return false;
       }
+
       throw error;
     }
   }
-  return true;
-};
 
-// eslint-disable-next-line arrow-body-style
+  return true;
+}; // eslint-disable-next-line arrow-body-style
+
+
 const parseImage = async image => {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(image)) {
@@ -58,6 +65,7 @@ const parseImage = async image => {
 
     const fd = fs.createReadStream(image);
     /* eslint-disable func-names */
+
     fd.pipe(new PNG()).on('parsed', function () {
       const that = this;
       resolve(that);
@@ -66,4 +74,14 @@ const parseImage = async image => {
   });
 };
 
-module.exports = { adjustCanvas, createFolder, mkdirp, parseImage };
+const errorSerialize = error => JSON.stringify(Object.getOwnPropertyNames(error).reduce((obj, prop) => Object.assign(obj, {
+  [prop]: error[prop]
+}), {}));
+
+module.exports = {
+  adjustCanvas,
+  createFolder,
+  mkdirp,
+  parseImage,
+  errorSerialize
+};

@@ -1,57 +1,109 @@
-# Cypress Visual Testing
+# Cypress Visual Regression
 
-Module for adding visual testing to [Cypress](https://www.cypress.io/) with image merging (base + diff + actual).
+
+Original module from `cypress-visual-regression` for adding visual regression testing to [Cypress](https://www.cypress.io/), with image merging feature. This merge images (base + diff + actual) with `join-images`.
+
 
 ## Getting Started
 
 Install:
 
+Download the tar.gz file in the release and unzip in your root repository.
+
 ```sh
-$ npm install cypress-visual-testing
+$ npm install cypress-visual-regression.tar
 ```
 
-Add the following config to your *cypress.json* file:
-
-```json
-{
-  "screenshotsFolder": "./cypress/snapshots/actual",
-  "trashAssetsBeforeRuns": true
-}
-```
-
-Add the plugin to *cypress/plugins/index.js*:
+Add the following config to your *cypress.config.js* file:
 
 ```javascript
-const getCompareSnapshotsPlugin = require('cypress-visual-testing/dist/plugin');
+const { defineConfig } = require("cypress");
+const getCompareSnapshotsPlugin = require('cypress-visual-regression/dist/plugin');
 
-module.exports = (on, config) => {
-  getCompareSnapshotsPlugin(on, config);
-};
+module.exports = defineConfig({
+  env: {
+    screenshotsFolder: './cypress/snapshots/actual',
+    trashAssetsBeforeRuns: true,
+    video: false
+  },
+  e2e: {
+    setupNodeEvents(on, config) {
+      getCompareSnapshotsPlugin(on, config);
+    },
+  },
+});
 ```
 
 Add the command to *cypress/support/commands.js*:
 
 ```javascript
-const compareSnapshotCommand = require('cypress-visual-testing/dist/command');
+const compareSnapshotCommand = require('cypress-visual-regression/dist/command');
 
 compareSnapshotCommand();
 ```
 
-> Make sure you import *commands.js* in *cypress/support/index.js*:
+> Make sure you import *commands.js* in *cypress/support/e2e.js*:
 >
 > ```javascript
 > import './commands'
 > ```
->
+
+### TypeScript
+
+If you're using TypeScript, use files with a `.ts` extension, as follows:
+
+*cypress/cypress.config.ts*
+
+```ts
+import { defineConfig } from 'cypress';
+import getCompareSnapshotsPlugin from 'cypress-visual-regression/dist/plugin';
+
+export default defineConfig({
+  env: {
+    screenshotsFolder: './cypress/snapshots/actual',
+    trashAssetsBeforeRuns: true,
+    video: false
+  },
+  e2e: {
+    setupNodeEvents(on, config) {
+      getCompareSnapshotsPlugin(on, config);
+    },
+  },
+});
+```
+
+*cypress/support/commands.ts*
+
+```ts
+import compareSnapshotCommand from 'cypress-visual-regression/dist/command';
+
+compareSnapshotCommand();
+```
+
+*cypress/tsconfig.json*
+
+```json:
+{
+  "compilerOptions": {
+    "types": [
+      "cypress",
+      "cypress-visual-regression"
+    ]
+  }
+}
+```
+
+For more info on how to use TypeScript with Cypress, please refer to [this document](https://docs.cypress.io/guides/tooling/typescript-support#Set-up-your-dev-environment).
+
 
 ### Options
 
-`failSilently` is enabled by default. Add the following config to your *cypress.json* file to see the errors:
+`failSilently` is enabled by default. Add the following config to your *cypress.config.js* file to see the errors:
 
-```json
+```javascript
 {
-  "env": {
-    "failSilently": false
+  env: {
+    failSilently: false
   }
 }
 ```
@@ -59,7 +111,7 @@ compareSnapshotCommand();
 You can also pass default [arguments](https://docs.cypress.io/api/cypress-api/screenshot-api.html#Arguments) to `compareSnapshotCommand()`:
 
 ```javascript
-const compareSnapshotCommand = require('cypress-visual-testing/dist/command');
+const compareSnapshotCommand = require('cypress-visual-regression/dist/command');
 
 compareSnapshotCommand({
   capture: 'fullPage'
@@ -78,6 +130,32 @@ You can control where snapshots should be located by setting two environment var
 | SNAPSHOT_DIFF_DIRECTORY | Directory for the snapshot diff |
 
 The `actual` directory always points to the configured screenshot directory.
+
+
+**Configure snapshot generation**
+
+In order to control the creation of diff images you may want to use the following environment variables which are
+typically set by using the field `env` in configuration in `cypress.config.json`.
+
+| Variable                        | Description                |
+|---------------------------------|----------------------------|
+| ALWAYS_GENERATE_DIFF            | Boolean, defaults to true  |
+| ALLOW_VISUAL_REGRESSION_TO_FAIL | Boolean, defaults to false |
+
+
+`ALWAYS_GENERATE_DIFF` specifies if diff images are generated for successful tests.  
+If you only want the tests to create diff images based on your threshold without the tests to fail, you can set `ALLOW_VISUAL_REGRESSION_TO_FAIL`.
+If this variable is set, diffs will be computed using your thresholds but tests will not fail if a diff is found.
+
+If you want to see all diff images which are different (based on your thresholds), use the following in your `cypress.config.json`:
+```json
+{
+  "env": {
+    "ALWAYS_GENERATE_DIFF": false,
+    "ALLOW_VISUAL_REGRESSION_TO_FAIL": true
+  }
+}
+```
 
 ## To Use
 
@@ -109,7 +187,7 @@ You can target a single HTML element as well:
 cy.get('#my-header').compareSnapshot('just-header')
 ```
 
-You can pass arguments as an object to `cy.screenshot()`, rather than just an error threshold, as well:
+You can pass arguments as an object to `cy.compareSnapshot()`, rather than just an error threshold, as well:
 
 ```js
 it('should display the login page correctly', () => {
@@ -120,7 +198,7 @@ it('should display the login page correctly', () => {
   });
 });
 ```
-> Looking for more examples? Review [docker/cypress/integration/main.spec.js](https://github.com/mjhea0/cypress-visual-testing/blob/master/docker/cypress/integration/main.spec.js).
+> Looking for more examples? Review [docker/cypress/integration/main.spec.js](https://github.com/mjhea0/cypress-visual-regression/blob/master/docker/cypress/integration/main.spec.js).
 
 
 Take the base images:
@@ -140,3 +218,60 @@ Find regressions:
 $ ./node_modules/.bin/cypress run --env type=actual
 ```
 
+## Example
+
+![example](./cypress-visual-regression.gif)
+
+## Tips & Tricks
+
+### Ignore some elements
+
+Following function creates a command that allows you to hide elements of the page based on their className:
+```ts
+/**
+ * To be called after you setup the command, in order to add a
+ * hook that does stuff before the command is triggered
+ */
+function beforeCompareSnapshotCommand(
+  /** Element you want to ignore */
+  ignoredElementsQuerySelector: string,
+  /** Main app element (if you want for the page to be loaded before triggering the command) */
+  appContentQuerySelector: string = "body"
+) {
+  Cypress.Commands.overwrite("compareSnapshot", (originalFn, ...args) => {
+    return cy
+      // wait for content to be ready 
+      .get(appContentQuerySelector)
+      // hide ignored elements
+      .then($app => {
+        return new Cypress.Promise((resolve, reject) => {
+          setTimeout(() => {
+            $app.find(ignoredElementsQuerySelector).css("visibility", "hidden");
+            resolve();
+            // add a very small delay to wait for the elements to be there, but you should
+            // make sure your test already handles this
+          }, 300);
+        });
+      })
+      .then(() => {
+        return originalFn(...args);
+      });
+  });
+}
+
+module.exports = beforeCompareSnapshotCommand;
+```
+You may then use this function like below:
+```js
+const compareSnapshotCommand = require("cypress-visual-regression/dist/command");
+const beforeCompareSnapshotCommand = require("./commands/beforeCompareSnapshots");
+compareSnapshotCommand({
+  errorThreshold: 0.1
+});
+// add a before hook to compareSnapshot (this must be called AFTER compareSnapshotCommand() so the command can be overriden)
+beforeCompareSnapshotCommand(
+  ".chromatic-ignore,[data-chromatic='ignore']",
+  "._app-content"
+);
+```
+In this example, we ignore the elements that are also ignored by 3rd party tool Chromatic.
