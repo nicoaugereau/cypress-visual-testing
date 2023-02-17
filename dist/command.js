@@ -71,13 +71,17 @@ function compareScreenshots(name, errorThreshold) {
     if (results.error) {
       throw deserializeError(results.error);
     }
-
+    return results
+  }).then(results => {
+    const allowVisualRegressionToFail = options.allowVisualRegressionToFail === true;
     if (results.percentage > errorThreshold) {
-      cy.task('mergeImages', options).then(() => {
-        throw new Error(`The "${name}" image is different. Threshold limit exceeded! \nExpected: ${errorThreshold} \nActual: ${results.percentage}`);
-      })
+      if (!allowVisualRegressionToFail) {
+        cy.task('mergeImages', options).then(() => {
+          throw new Error(`The "${name}" image is different. Threshold limit exceeded! \nExpected: ${errorThreshold} \nActual: ${results.percentage}`);
+        })
+      }
     }
-  });
+  })
 }
 /** Add custom cypress command to compare image snapshots of an element or the window. */
 
