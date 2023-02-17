@@ -66,7 +66,7 @@ async function compareSnapshotsPlugin(args) {
   const snapshotBaseDirectory = getValueOrDefault(args.baseDir, path.join(process.cwd(), 'cypress', 'snapshots', 'base'));
   const snapshotDiffDirectory = getValueOrDefault(args.diffDir, path.join(process.cwd(), 'cypress', 'snapshots', 'diff'));
   const alwaysGenerateDiff = !(args.keepDiff === false);
-  const allowVisualRegressionToFail = args.allowVisualRegressionToFail === true;
+  //const allowVisualRegressionToFail = args.allowVisualRegressionToFail === true;
   const fileName = sanitize(args.fileName);
   const options = {
     actualImage: path.join(CYPRESS_SCREENSHOT_DIR, args.specDirectory, `${fileName}-actual.png`),
@@ -114,7 +114,7 @@ async function compareSnapshotsPlugin(args) {
   };
 }
 
-function mergeImages(args) {
+async function mergeImages(args) {
 
   const snapshotBaseDirectory = getValueOrDefault(args.baseDir, path.join(process.cwd(), 'cypress', 'snapshots', 'base'));
   const snapshotDiffDirectory = getValueOrDefault(args.diffDir, path.join(process.cwd(), 'cypress', 'snapshots', 'diff'));
@@ -125,7 +125,7 @@ function mergeImages(args) {
   };
 
   try {
-    joinImages([options.expectedImage, options.diffImage, options.actualImage], {direction:'vertical', margin:20})
+    await joinImages([options.expectedImage, options.diffImage, options.actualImage], {direction:'vertical', margin:20})
     .then((img) => {
       img.toFile(path.join(CYPRESS_SCREENSHOT_DIR, args.specName, `${args.fileName} (failed).png`));
     });
@@ -134,6 +134,7 @@ function mergeImages(args) {
   }
   return true;
 }
+
 
 /** Install plugin to compare snapshots.
  * (Also installs an internally used plugin to move snapshot files). */
