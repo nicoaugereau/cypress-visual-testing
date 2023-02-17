@@ -101,7 +101,6 @@ async function compareSnapshotsPlugin(args) {
       const specFolder = path.join(snapshotDiffDirectory, args.specDirectory);
       await createFolder(specFolder, args.failSilently);
       diff.pack().pipe(fs.createWriteStream(options.diffImage));
-      mergeImages(options)
     }
   } catch (error) {
     return {
