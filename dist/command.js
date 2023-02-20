@@ -21,7 +21,7 @@ function getErrorThreshold(defaultScreenshotOptions, params) {
 
 function getSpecRelativePath() {
   const integrationFolder = getValueOrDefault(Cypress.env('INTEGRATION_FOLDER'), 'cypress/e2e');
-  return Cypress.spec.relative.replace(integrationFolder, '');
+  return Cypress.spec.relative.replace(/\\/g, '/').replace(integrationFolder, '');
 }
 /** Take a screenshot and move screenshot to base or actual folder */
 
