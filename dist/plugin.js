@@ -127,7 +127,11 @@ async function mergeImages(args) {
   try {
     await joinImages([options.expectedImage, options.diffImage, options.actualImage], {direction:'vertical', margin:20})
     .then((img) => {
-      img.toFile(path.join(CYPRESS_SCREENSHOT_DIR, args.specName, `${args.fileName} (failed).png`));
+      var dir = path.join(CYPRESS_SCREENSHOT_DIR, args.specName)
+      if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      img.toFile(path.join(dir, `${args.fileName} (failed).png`));
     });
   } catch (error) {
     return { error };
